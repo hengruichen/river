@@ -87,3 +87,4 @@ class StandardAbsoluteDeviation(anomaly.base.AnomalyDetector):
         )
 
         return abs(score)
+
