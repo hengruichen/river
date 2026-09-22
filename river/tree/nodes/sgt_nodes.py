@@ -105,27 +105,8 @@ class SGTLeaf(Leaf):
 
             all_dlms += dlms
 
-        candidate.merit.loss_mean = (
-            all_dlms.mean.get() + len(cat_collection) * sgt.gamma / self.total_weight
-        )
+        candidate.merit.loss_mean = all_dlms.mean.get()
         candidate.merit.loss_var = all_dlms.get()
-
-        return candidate, skip_candidate
-
-    def _eval_numerical_splits(self, feature_idx, candidate, sgt) -> tuple[BranchFactory, bool]:
-        skip_candidate = True
-        quantizer = self._split_stats[feature_idx]  # type: ignore
-
-        # Get updated quantizer params
-        self.split_params[feature_idx].update(quantizer._get_params())  # type: ignore
-
-        n_bins = len(quantizer)
-        if n_bins == 1:  # Insufficient number of bins to perform splits
-            return candidate, skip_candidate
-
-        skip_candidate = False
-        candidate.merit.loss_mean = math.inf
-        candidate.merit.delta_pred = {}
 
         # Auxiliary gradient and hessian statistics
         left_ghs = GradHessStats()
@@ -230,3 +211,4 @@ class SGTLeaf(Leaf):
 
     def __repr__(self):
         return str(self.prediction())
+
